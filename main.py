@@ -15,7 +15,7 @@ async def get_posts_from_author(author: str):
     
     print("Getting posts from", author)
     res = []
-    gelbooru = Gelbooru('API_KEY', 'USER_ID')
+    gelbooru = Gelbooru(config["gelbooru_api_key"], config["gelbooru_user_id"])
     
     i = 0
     while True:
@@ -35,7 +35,7 @@ async def get_all_posts():
     for x in config["authors"]:
         posts += await get_posts_from_author(x)
     
-    print(len(posts))
+    print("Got", len(posts), "posts") # TODO: use logging library
     
     posts_info = []
     for post in posts:

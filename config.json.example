@@ -1,5 +1,8 @@
 {
+    "gelbooru_api_key": "API_KEY",
+    "gelbooru_user_id": "USER_ID",
     "authors": [
-        "sample-author"
+        "author_1",
+        "author_2"
     ]
 }
