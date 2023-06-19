@@ -1,8 +1,7 @@
 {
-    "gelbooru_api_key": "API_KEY",
-    "gelbooru_user_id": "USER_ID",
-    "authors": [
-        "author_1",
-        "author_2"
-    ]
+    "gelbooru_api_key": "",
+    "gelbooru_user_id": 1234567,
+    "tags": [ "{author1", "~", "author2}" ],
+    "bot_token": "",
+    "chat_id": 0
 }
