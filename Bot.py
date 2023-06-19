@@ -1,6 +1,5 @@
 import requests, logging, json
 from time import sleep
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
 REQUEST_TIMEOUT = 3
