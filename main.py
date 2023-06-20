@@ -6,9 +6,21 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 SENT_POSTS_PATH = "sent_posts.json"
+POSTS_PATH = "posts.json"
 GELBOORU_LIMIT = 100 # must be 100 or under
-    
+
+first_load = True
 async def get_all_posts():
+    global first_load
+    
+    if first_load:
+        try:
+            with open(POSTS_PATH, "r", encoding="utf-8") as in_file:
+                posts = json.loads(in_file.readline())
+                first_load = False
+                return posts
+        except FileNotFoundError:
+            logger.info(f"{POSTS_PATH} file not found. Let's create it.")
 
     logger.debug("Config:" + str(config))
     gelbooru = Gelbooru(config["gelbooru_api_key"], config["gelbooru_user_id"])
@@ -50,7 +62,13 @@ async def get_all_posts():
             "source": post.source
         })
         
-    return sorted(posts_info, key=lambda x:x["created"], reverse=False)
+    posts = sorted(posts_info, key=lambda x:x["created"], reverse=False)
+    
+    with open(POSTS_PATH, "w", encoding="utf-8") as out_file:
+        text_content = json.dumps([{key : val for key, val in sub.items() if key != "created"} for sub in posts])
+        out_file.write(text_content)
+    first_load = False
+    return posts
 
 def save_sent_ids(input_list):
     
@@ -59,6 +77,7 @@ def save_sent_ids(input_list):
     return len(input_list)
 
 def send_posts(posts, safe_update=False):
+
     i = 0
     for post in posts:
         
@@ -86,6 +105,7 @@ def send_posts(posts, safe_update=False):
 
 ## BEGIN COROUTINES FOR ASYNCIO
 async def get_posts_coroutine():
+
     i = 1
     while True:
         posts = await get_all_posts()
