@@ -15,7 +15,7 @@ async def get_all_posts():
     
     authors = set(config["authors"])
     if len(authors) == 1:
-        tags = authors
+        tags = list(authors)
     else:
         tagstring = "{" + ' ~ '.join(authors) + "}"
         tags = tagstring.split() + config["tags"]
@@ -26,8 +26,9 @@ async def get_all_posts():
     i = 0
     while True:
         
-        logger.info(f"Asking for page {i}.")
+        logger.debug(f"Asking for page {i}.")
         temp_results = await gelbooru.search_posts(tags=tags, exclude_tags=exclude_tags, page=i, limit=GELBOORU_LIMIT)
+        logger.info(f"Got {len(temp_results)} posts from page {i}.")
         posts += temp_results
         
         if len(temp_results) < GELBOORU_LIMIT:
@@ -58,15 +59,15 @@ def save_sent_ids(input_list):
     return len(input_list)
 
 def send_posts(posts, safe_update=False):
-    
-    try:
-        with open(SENT_POSTS_PATH, "r", encoding="utf-8") as in_file:
-            sent_ids = json.loads(in_file.readline())
-    except FileNotFoundError:
-        sent_ids = []
-    
     i = 0
     for post in posts:
+        
+        try:
+            with open(SENT_POSTS_PATH, "r", encoding="utf-8") as in_file:
+                sent_ids = json.loads(in_file.readline())
+        except FileNotFoundError:
+            sent_ids = []
+        
         i += 1
         post_id = post["id"]
         if post_id not in sent_ids:
