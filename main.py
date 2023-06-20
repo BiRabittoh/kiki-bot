@@ -40,7 +40,7 @@ async def get_all_posts():
     while True:
         
         try_count = 0
-        logger.debug(f"Asking for page {i}.")
+        logger.debug(f"Asking for page {page}.")
         try:
             temp_results = await gelbooru.search_posts(tags=tags, exclude_tags=exclude_tags, page=page, limit=GELBOORU_LIMIT)
             logger.info(f"Got {len(temp_results)} posts from page {page}.")
