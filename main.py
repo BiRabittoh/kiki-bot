@@ -38,14 +38,16 @@ async def get_all_posts():
     
     posts = []
     page = 0
+    try_count = 0
+    
     while True:
         
-        try_count = 0
         logger.debug(f"Asking for page {page}.")
         try:
             temp_results = await gelbooru.search_posts(tags=tags, exclude_tags=exclude_tags, page=page, limit=GELBOORU_LIMIT)
             logger.info(f"Got {len(temp_results)} posts from page {page}.")
             posts += temp_results
+            try_count = 0
         
             if len(temp_results) < GELBOORU_LIMIT or try_count > GELBOORU_MAX_RETRIES:
                 break
