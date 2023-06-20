@@ -1,7 +1,12 @@
 {
     "gelbooru_api_key": "",
-    "gelbooru_user_id": 1234567,
-    "tags": [ "{author1", "~", "author2}" ],
+    "gelbooru_user_id": 0,
+    "authors": ["author1", "author2"],
+    "tags": [],
+    "exclude_tags": ["rating:explicit"],
     "bot_token": "",
-    "chat_id": 0
+    "chat_id": "",
+    "refresh_delay": 3600,
+    "gelbooru_delay": 3,
+    "send_delay": 120
 }

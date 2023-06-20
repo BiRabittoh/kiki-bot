@@ -1,6 +1,6 @@
 import requests, logging, json
 from time import sleep
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 REQUEST_TIMEOUT = 3
 MAX_RETRIES = 3
@@ -16,8 +16,8 @@ def telegram_request(payload, post, token, method="sendMessage"):
         if r['ok']:
             return r
         i += 1
-        logging.debug(f"{i}: {payload}")
-        logging.warn(f"{i}: {r}")
+        logger.warn(f"{i}: {r}")
+        logger.debug(f"{i}: {payload}")
         sleep(REQUEST_TIMEOUT)
     
     return telegram_request({
@@ -41,7 +41,7 @@ def send_post_telegram(post, bot_token, chat_id):
             r = telegram_request({ 'chat_id': chat_id, 'video': link, 'reply_markup': reply_markup },
                                  post=post, token=bot_token, method="sendVideo")
         case _:
-            logging.debug(f"Unhandled extension {extension} for link: {link}.")
+            logger.debug(f"Unhandled extension {extension} for link: {link}.")
             r = telegram_request({ 'chat_id': chat_id, 'text': f"[Unknown extension]({link}).", 'parse_mode': 'markdown' },
                                  post=post, token=bot_token)
     return r
