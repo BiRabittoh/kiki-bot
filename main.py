@@ -26,7 +26,8 @@ async def get_all_posts():
     logger.debug("Config:" + str(config))
     gelbooru = Gelbooru(config["gelbooru_api_key"], config["gelbooru_user_id"])
     
-    authors = set(config["authors"])
+    authors = sorted(set(config["authors"]))
+    logger.info(f"Authors: {authors}")
     if len(authors) == 1:
         tags = list(authors)
     else:
