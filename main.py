@@ -1,7 +1,7 @@
 from pygelbooru import Gelbooru, GelbooruException
 from time import sleep
 from Bot import send_post_telegram
-import requests, json, asyncio, logging
+import json, asyncio, logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -64,9 +64,10 @@ async def get_all_posts():
     
     posts_info = []
     for post in posts:
+        post_authors = [x for x in post.tags if x in authors]
         posts_info.append({
             "id": int(post),
-            "creator": post.tags[0],
+            "creator": ", ".join(post_authors),
             "created": post.created_at,
             "url": post.file_url,
             "filename": post.filename,

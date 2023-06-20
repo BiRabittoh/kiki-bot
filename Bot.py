@@ -22,7 +22,7 @@ def telegram_request(payload, post, token, method="sendMessage"):
     
     return telegram_request({
                             'chat_id': payload['chat_id'],
-                            'text': f"[Failed]({BASE_POST_URL}{post['id']}).",
+                            'text': f"[{post['creator']}]({BASE_POST_URL}{post['id']})",
                             'parse_mode': 'markdown'
                             }, post=post, token=token) 
 
