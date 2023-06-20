@@ -1,4 +1,4 @@
-from pygelbooru import Gelbooru
+from pygelbooru import Gelbooru, GelbooruException
 from time import sleep
 from Bot import send_post_telegram
 import requests, json, asyncio, logging
@@ -39,14 +39,18 @@ async def get_all_posts():
     while True:
         
         logger.debug(f"Asking for page {i}.")
-        temp_results = await gelbooru.search_posts(tags=tags, exclude_tags=exclude_tags, page=i, limit=GELBOORU_LIMIT)
-        logger.info(f"Got {len(temp_results)} posts from page {i}.")
-        posts += temp_results
+        try:
+            temp_results = await gelbooru.search_posts(tags=tags, exclude_tags=exclude_tags, page=i, limit=GELBOORU_LIMIT)
+            logger.info(f"Got {len(temp_results)} posts from page {i}.")
+            posts += temp_results
         
-        if len(temp_results) < GELBOORU_LIMIT:
-            break
-        i += 1
-        sleep(GELBOORU_DELAY)
+            if len(temp_results) < GELBOORU_LIMIT:
+                break
+            i += 1
+        except GelbooruException:
+            logger.warning(f"Got an error for page {i}. Retrying soon...")
+        finally:
+            sleep(GELBOORU_DELAY)
     
     logger.info(f"Got {len(posts)} posts.")
     
