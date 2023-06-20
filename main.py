@@ -47,10 +47,10 @@ async def get_all_posts():
             if len(temp_results) < GELBOORU_LIMIT:
                 break
             i += 1
+            sleep(GELBOORU_DELAY)
         except GelbooruException:
             logger.warning(f"Got an error for page {i}. Retrying soon...")
-        finally:
-            sleep(GELBOORU_DELAY)
+            sleep(GELBOORU_DELAY * 10)
     
     logger.info(f"Got {len(posts)} posts.")
     
