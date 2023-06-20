@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 SENT_POSTS_PATH = "sent_posts.json"
 POSTS_PATH = "posts.json"
 GELBOORU_LIMIT = 100 # must be 100 or under
+GELBOORU_MAX_RETRIES = 3
 
 first_load = True
 async def get_all_posts():
@@ -35,21 +36,23 @@ async def get_all_posts():
     logger.info(f"tags: {tags}; exclude_tags: {exclude_tags}")
     
     posts = []
-    i = 0
+    page = 0
     while True:
         
+        try_count = 0
         logger.debug(f"Asking for page {i}.")
         try:
-            temp_results = await gelbooru.search_posts(tags=tags, exclude_tags=exclude_tags, page=i, limit=GELBOORU_LIMIT)
-            logger.info(f"Got {len(temp_results)} posts from page {i}.")
+            temp_results = await gelbooru.search_posts(tags=tags, exclude_tags=exclude_tags, page=page, limit=GELBOORU_LIMIT)
+            logger.info(f"Got {len(temp_results)} posts from page {page}.")
             posts += temp_results
         
-            if len(temp_results) < GELBOORU_LIMIT:
+            if len(temp_results) < GELBOORU_LIMIT or try_count > GELBOORU_MAX_RETRIES:
                 break
-            i += 1
+            page += 1
             sleep(GELBOORU_DELAY)
         except GelbooruException:
-            logger.warning(f"Got an error for page {i}. Retrying soon...")
+            try_count += 1
+            logger.warning(f"Got an error on try {try_count} for page {page}. Retrying soon...")
             sleep(GELBOORU_DELAY * 10)
     
     logger.info(f"Got {len(posts)} posts.")
@@ -58,7 +61,7 @@ async def get_all_posts():
     for post in posts:
         posts_info.append({
             "id": int(post),
-            "creator": post.creator_id,
+            "creator": post.tags[0],
             "created": post.created_at,
             "url": post.file_url,
             "filename": post.filename,

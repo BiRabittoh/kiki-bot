@@ -30,7 +30,7 @@ def send_post_telegram(post, bot_token, chat_id):
     
     extension = post["filename"].split(".")[-1]
     link = post["url"]
-    reply_markup = json.dumps({ "inline_keyboard": [[{ "text": 'Sauce 🍝', "url": BASE_POST_URL + str(post['id']) }]]})
+    reply_markup = json.dumps({ "inline_keyboard": [[{ "text": f"🍝 {post['creator']}", "url": BASE_POST_URL + str(post['id']) }]]})
     
     r = None
     match extension:
