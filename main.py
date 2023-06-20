@@ -49,12 +49,14 @@ async def get_all_posts():
             posts += temp_results
             try_count = 0
         
-            if len(temp_results) < GELBOORU_LIMIT or try_count > GELBOORU_MAX_RETRIES:
+            if len(temp_results) < GELBOORU_LIMIT:
                 break
             page += 1
             sleep(GELBOORU_DELAY)
         except GelbooruException:
             try_count += 1
+            if try_count > GELBOORU_MAX_RETRIES:
+                break
             logger.warning(f"Got an error on try {try_count} for page {page}. Retrying soon...")
             sleep(GELBOORU_DELAY * 10)
     
