@@ -102,8 +102,9 @@ async def get_all_posts():
     logger.debug("Config:" + str(config))
     gelbooru = Gelbooru(config["gelbooru_api_key"], config["gelbooru_user_id"])
     
-    authors = chunks(sorted(set(config["authors"])), GELBOORU_MAX_AUTHORS)
+    authors = sorted(set(config["authors"]))
     logger.info(f"Authors: {authors}")
+    authors = chunks(authors, GELBOORU_MAX_AUTHORS)
     
     new_posts_info = []
     for split in authors:
