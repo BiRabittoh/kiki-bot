@@ -97,19 +97,7 @@ def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     return [lst[i:i + n] for i in range(0, len(lst), n)]
 
-first_load = True
 async def get_all_posts():
-    global first_load
-    
-    posts = load_posts_if_present()
-    
-    if first_load:
-        first_load = False
-        
-        if len(posts) != 0:
-            return posts
-        
-        logger.info(f"{POSTS_PATH} file not found. Let's create it.")
 
     logger.debug("Config:" + str(config))
     gelbooru = Gelbooru(config["gelbooru_api_key"], config["gelbooru_user_id"])
@@ -121,8 +109,7 @@ async def get_all_posts():
     for split in authors:
         new_posts_info += await get_posts_from_authors(gelbooru, split, config["tags"], config["exclude_tags"])
         
-    posts = list(unique_everseen(posts + new_posts_info))
-
+    posts = list(unique_everseen(posts + new_posts_info)) # remove duplicates
     posts.sort(key=lambda x:x["created"], reverse=False) # sort posts
     
     n = update_posts(posts)
