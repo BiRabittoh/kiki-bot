@@ -110,7 +110,7 @@ async def get_all_posts():
     for split in authors:
         new_posts_info += await get_posts_from_authors(gelbooru, split, config["tags"], config["exclude_tags"])
         
-    posts = list(unique_everseen(posts + new_posts_info)) # remove duplicates
+    posts = list(unique_everseen(new_posts_info)) # remove duplicates
     posts.sort(key=lambda x:x["created"], reverse=False) # sort posts
     
     n = update_posts(posts)
