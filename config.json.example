@@ -6,7 +6,8 @@
     "exclude_tags": ["rating:explicit"],
     "bot_token": "",
     "chat_id": "",
+    "gelbooru_max_authors": 10,
+    "gelbooru_delay": 0,
     "refresh_delay": 3600,
-    "gelbooru_delay": 3,
-    "send_delay": 120
+    "send_delay": 180
 }
